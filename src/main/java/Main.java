@@ -12,7 +12,7 @@ public class Main extends Plugin{
 
     @Override
     public void registerClientCommands(CommandHandler handler) {
-        handler.<Player>register("spawn-core","<smail/normal/big>", "Make new core", (arg, player) -> {
+        handler.<Player>register("spawn-core","<small/normal/big>", "Make new core", (arg, player) -> {
             // Check player is admin
             if(!player.isAdmin){
                 player.sendMessage("[scarlet]You're not admin!");
@@ -31,10 +31,8 @@ public class Main extends Plugin{
             }
 
             // Core spawn
-            Call.onConstructFinish(world.tile(player.tileX(),player.tileY()), core,0,(byte)0,player.getTeam(),false);
-
-            // Validate core spawned
-            if(world.tile(player.tileX(),player.tileY()).block() == core){
+            if(player.tileOn().breakable()) {
+                Call.onConstructFinish(world.tile(player.tileX(),player.tileY()), core,0,(byte)0,player.getTeam(),false);
                 player.sendMessage("[green]Core spawned!");
             } else {
                 player.sendMessage("[scarlet]Core spawn failed!");
