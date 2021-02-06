@@ -1,38 +1,34 @@
 import arc.util.CommandHandler;
 import mindustry.content.Blocks;
-import mindustry.entities.type.Player;
 import mindustry.gen.Call;
-import mindustry.plugin.Plugin;
+import mindustry.gen.Playerc;
+import mindustry.mod.Plugin;
 import mindustry.world.Block;
 
 import static mindustry.Vars.world;
 
-public class Main extends Plugin{
+public class Main extends Plugin {
     public Main(){}
 
     @Override
     public void registerClientCommands(CommandHandler handler) {
-        handler.<Player>register("spawn-core","<small/normal/big>", "Make new core", (arg, player) -> {
+        handler.<Playerc>register("spawn-core","<small/normal/big>", "Make new core", (arg, player) -> {
             // Check player is admin
-            if(!player.isAdmin){
+            if(!player.admin()){
                 player.sendMessage("[scarlet]You're not admin!");
                 return;
             }
 
             // Core type
-            Block core = Blocks.coreShard;
-            switch(arg[0]){
-                case "normal":
-                    core = Blocks.coreFoundation;
-                    break;
-                case "big":
-                    core = Blocks.coreNucleus;
-                    break;
-            }
+            Block core = switch (arg[0]) {
+                case "normal" -> Blocks.coreFoundation;
+                case "big" -> Blocks.coreNucleus;
+                default -> Blocks.coreShard;
+            };
 
             // Core spawn
             if(player.tileOn().breakable()) {
-                Call.onConstructFinish(world.tile(player.tileX(),player.tileY()), core,0,(byte)0,player.getTeam(),false);
+                Call.constructFinish(world.tile(player.tileX(),player.tileY()), core, player.unit(), (byte)0,player.team(),false);
                 player.sendMessage("[green]Core spawned!");
             } else {
                 player.sendMessage("[scarlet]Core spawn failed!");
